@@ -1,0 +1,46 @@
+{
+  "name": "electron-oauth2",
+  "version": "0.1.0",
+  "description": "An OAuth2 module for your Electron app.",
+  "license": "MIT",
+  "repository": "mawie81/electron-oauth2",
+  "author": {
+    "name": "Marcel Wiehle",
+    "email": "mawieh@googlemail.com",
+    "url": "marcel.wiehle.me"
+  },
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "xo"
+  },
+  "keywords": [
+    "electron",
+    "oauth2",
+    "authentication",
+    "access token"
+  ],
+  "devDependencies": {
+    "ava": "^0.8.0",
+    "xo": "^0.12.1"
+  },
+  "dependencies": {
+    "node-fetch": "^1.3.3",
+    "object-assign": "^4.0.1",
+    "pinkie-promise": "^2.0.0"
+  },
+  "xo": {
+    "space": true,
+    "rules": {
+      "brace-style": [
+        2,
+        "1tbs",
+        {
+          "allowSingleLine": true
+        }
+      ],
+      "camelcase": 0
+    }
+  }
+}

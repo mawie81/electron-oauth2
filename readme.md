@@ -1,0 +1,124 @@
+# electron-oauth2 [![Build Status](https://travis-ci.org/mawie81/electron-oauth2.svg?branch=master)](https://travis-ci.org/mawie81/electron-oauth2)
+
+> A library to handle OAuth2 authentication for your [Electron](http://electron.atom.io) app.
+
+
+## Install
+
+```
+$ npm install --save electron-oauth2
+```
+
+
+## Usage
+
+```js
+const electronOauth2 = require('electron-oauth2');
+
+var config = {
+    clientId: 'CLIENT_ID',
+    clientSecret: 'CLIENT_SECRET',
+    authorizationUrl: 'AUTHORIZATION_URL',
+    tokenUrl: 'TOKEN_URL'
+};
+
+app.on('ready', () => {
+  const windowParams = {
+    alwaysOnTop: true,
+    autoHideMenuBar: true,
+    nodeIntegration: false
+  }
+
+  const options = {
+    scope: 'SCOPE',
+    accessType: 'ACCESS_TYPE'
+  };
+
+  const myApiOauth = electronOauth2(config, windowParams);
+
+  myApiOauth.getAccessToken(options)
+    .then(token => {
+      // use your token.access_token
+
+      myApiOauth.refreshToken(token.refresh_token)
+        .then(newToken => {
+          //use your new token
+        }}
+    });
+});
+```
+
+
+## API
+
+### electronOauth2(config, windowParams)
+
+#### config
+
+Type: `Object`
+
+##### Fields
+
+###### authorizationUrl
+Type: `String`
+The URL for the authorization request.
+
+###### tokenUrl
+Type: `String`
+The URL for the access token request.
+
+###### clientId
+Type: `String`
+The OAuth2 client id.
+
+###### clientSecret
+Type: `String`
+The OAuth2 client secret.
+
+#### windowParams
+
+Type: `Object`
+
+An object that will be used to create the BrowserWindow. Details: [Electron BrowserWindow documention](https://github.com/atom/electron/blob/master/docs/api/browser-window.md)
+
+### Methods
+
+#### getAccessToken(options)
+
+Returns a ```Promise``` that gets resolved with the retrieved access token object if the authentication succeeds.
+
+##### options: *optional*
+
+###### scopes
+Type: `String`
+The optional OAuth2 scopes.
+
+###### accessType
+Type: `String`
+The optional OAuth2 access type.
+
+#### getAuthorizationCode(options)
+
+Returns a ```Promise``` that gets resolved with the authorization code of the OAuth2 authorization request.
+
+##### options
+
+###### scopes
+Type: `String`
+The optional OAuth2 scopes.
+
+###### accessType
+Type: `String`
+The optional OAuth2 access type.
+
+#### refreshToken(token)
+
+Returns a ```Promise``` that gets resolved with the refreshed token object.
+
+##### token
+Type: `String`
+An OAuth2 refresh token.
+
+## License
+
+MIT © [Marcel Wiehle](http://marcel.wiehle.me)
