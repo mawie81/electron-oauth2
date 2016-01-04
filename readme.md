@@ -108,9 +108,9 @@ Returns a ```Promise``` that gets resolved with the authorization code of the OA
 
 ##### options
 
-###### scopes
+###### scope
 Type: `String`
-The optional OAuth2 scopes.
+The optional OAuth2 scope.
 
 ###### accessType
 Type: `String`
