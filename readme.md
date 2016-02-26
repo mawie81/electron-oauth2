@@ -44,7 +44,7 @@ app.on('ready', () => {
       myApiOauth.refreshToken(token.refresh_token)
         .then(newToken => {
           //use your new token
-        }}
+        });
     });
 });
 ```
