@@ -37,6 +37,7 @@ module.exports = function (config, windowParams) {
       authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
         var rawCode = /\?code=(.+)$/.exec(newUrl) || /authorize\/([^&]*)/.exec(newUrl);
         var code = (rawCode && rawCode.length > 1) ? rawCode[1] : null;
+        code = code.substr(0, code.indexOf('&'));
         var error = /\?error=(.+)$/.exec(newUrl);
 
         if (error) {
