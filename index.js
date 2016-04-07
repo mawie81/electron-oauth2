@@ -3,7 +3,7 @@ const queryString = require('querystring');
 const fetch = require('node-fetch');
 const objectAssign = require('object-assign');
 const electron = require('electron');
-const BrowserWindow = electron.BrowserWindow;
+const BrowserWindow = electron.remote.BrowserWindow;
 
 module.exports = function (config, windowParams) {
   function getAuthorizationCode(opts) {
@@ -37,6 +37,7 @@ module.exports = function (config, windowParams) {
       authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
         var rawCode = /\?code=(.+)$/.exec(newUrl) || /authorize\/([^&]*)/.exec(newUrl);
         var code = (rawCode && rawCode.length > 1) ? rawCode[1] : null;
+        if (code !== null && code.indexOf('&') !== -1) { code = code.substr(0, code.indexOf('&')); }
         var error = /\?error=(.+)$/.exec(newUrl);
 
         if (error) {
