@@ -3,7 +3,7 @@ const queryString = require('querystring');
 const fetch = require('node-fetch');
 const objectAssign = require('object-assign');
 const electron = require('electron');
-const BrowserWindow = electron.remote.BrowserWindow;
+const {BrowserWindow} = require('electron');
 
 module.exports = function (config, windowParams) {
   function getAuthorizationCode(opts) {
