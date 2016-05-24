@@ -27,7 +27,9 @@ app.on('ready', () => {
   const windowParams = {
     alwaysOnTop: true,
     autoHideMenuBar: true,
-    nodeIntegration: false
+    webPreferences: {
+        nodeIntegration: false
+    }
   }
 
   const options = {
