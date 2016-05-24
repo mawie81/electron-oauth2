@@ -1,6 +1,6 @@
 {
   "name": "electron-oauth2",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "An OAuth2 module for your Electron app.",
   "license": "MIT",
   "repository": "mawie81/electron-oauth2",
