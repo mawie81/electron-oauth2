@@ -2,6 +2,7 @@ const Promise = require('pinkie-promise');
 const queryString = require('querystring');
 const fetch = require('node-fetch');
 const objectAssign = require('object-assign');
+const nodeUrl = require('url');
 const {BrowserWindow} = require('electron');
 
 module.exports = function (config, windowParams) {
@@ -34,12 +35,12 @@ module.exports = function (config, windowParams) {
       });
 
       authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
-        var rawCode = /\?code=(.+)$/.exec(newUrl) || /authorize\/([^&]*)/.exec(newUrl);
-        var code = (rawCode && rawCode.length > 1) ? rawCode[1] : null;
-        if (code !== null && code.indexOf('&') !== -1) { code = code.substr(0, code.indexOf('&')); }
-        var error = /\?error=(.+)$/.exec(newUrl);
+        var url_parts = nodeUrl.parse(newUrl, true);
+        var query = url_parts.query;
+        var code = query.code;
+        var error = query.error;
 
-        if (error) {
+        if (error !== undefined) {
           reject(error);
           authWindow.removeAllListeners('closed');
           authWindow.destroy();
