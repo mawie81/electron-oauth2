@@ -2,15 +2,21 @@ const Promise = require('pinkie-promise');
 const queryString = require('querystring');
 const fetch = require('node-fetch');
 const objectAssign = require('object-assign');
+const nodeUrl = require('url');
 const electron = require('electron');
-const {BrowserWindow} = require('electron');
+const BrowserWindow = electron.BrowserWindow;
 
 module.exports = function (config, windowParams) {
   function getAuthorizationCode(opts) {
     opts = opts || {};
+
+    if (!config.redirectUri) {
+      config.redirectUri = 'urn:ietf:wg:oauth:2.0:oob';
+    }
+
     var urlParams = {
       response_type: 'code',
-      redirect_uri: 'urn:ietf:wg:oauth:2.0:oob',
+      redirect_uri: config.redirectUri,
       client_id: config.clientId
     };
 
@@ -34,21 +40,29 @@ module.exports = function (config, windowParams) {
         reject(new Error('window was closed by user'));
       });
 
-      authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
-        var rawCode = /\?code=(.+)$/.exec(newUrl) || /authorize\/([^&]*)/.exec(newUrl);
-        var code = (rawCode && rawCode.length > 1) ? rawCode[1] : null;
-        if (code !== null && code.indexOf('&') !== -1) { code = code.substr(0, code.indexOf('&')); }
-        var error = /\?error=(.+)$/.exec(newUrl);
+      function onCallback(url) {
+        var url_parts = nodeUrl.parse(url, true);
+        var query = url_parts.query;
+        var code = query.code;
+        var error = query.error;
 
         if (error) {
           reject(error);
           authWindow.removeAllListeners('closed');
-          authWindow.destroy();
+          authWindow.close();
         } else if (code) {
           resolve(code);
           authWindow.removeAllListeners('closed');
-          authWindow.destroy();
+          authWindow.close();
         }
+      }
+
+      authWindow.webContents.on('will-navigate', (event, url) => {
+        onCallback(url);
+      });
+
+      authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
+        onCallback(newUrl);
       });
     });
   }
@@ -83,7 +97,7 @@ module.exports = function (config, windowParams) {
         return tokenRequest({
           code: authorizationCode,
           grant_type: 'authorization_code',
-          redirect_uri: 'urn:ietf:wg:oauth:2.0:oob'
+          redirect_uri: config.redirectUri
         });
       });
   }
@@ -92,7 +106,7 @@ module.exports = function (config, windowParams) {
     return tokenRequest({
       refresh_token: refreshToken,
       grant_type: 'refresh_token',
-      redirect_uri: 'urn:ietf:wg:oauth:2.0:oob'
+      redirect_uri: config.redirectUri
     });
   }
 
