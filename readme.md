@@ -20,7 +20,8 @@ var config = {
     clientSecret: 'CLIENT_SECRET',
     authorizationUrl: 'AUTHORIZATION_URL',
     tokenUrl: 'TOKEN_URL',
-    useBasicAuthorizationHeader: false
+    useBasicAuthorizationHeader: false,
+    redirect_url: 'http://localhost'
 };
 
 app.on('ready', () => {
@@ -81,6 +82,10 @@ The OAuth2 client secret.
 ###### useBasicAuthorizationHeader
 Type: `bool`
 If set to true, token requests will be made using a Basic authentication header instead of passing the client id and secret in the body.
+
+###### redirectUri (optional)
+Type: `String`
+Sets a custom redirect_uri that can be required by some OAuth2 clients.
 
 #### windowParams
 
