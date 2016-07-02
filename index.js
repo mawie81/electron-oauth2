@@ -3,14 +3,18 @@ const queryString = require('querystring');
 const fetch = require('node-fetch');
 const objectAssign = require('object-assign');
 const nodeUrl = require('url');
-const {BrowserWindow} = require('electron');
+const electron = require('electron');
+const BrowserWindow = electron.BrowserWindow;
 
 module.exports = function (config, windowParams) {
   function getAuthorizationCode(opts) {
     opts = opts || {};
+
+    if (!config.redirect_uri) config.redirect_uri = 'urn:ietf:wg:oauth:2.0:oob';
+
     var urlParams = {
       response_type: 'code',
-      redirect_uri: config.redirectUri || 'urn:ietf:wg:oauth:2.0:oob',
+      redirect_uri: config.redirect_uri,
       client_id: config.clientId
     };
 
@@ -34,8 +38,8 @@ module.exports = function (config, windowParams) {
         reject(new Error('window was closed by user'));
       });
 
-      authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
-        var url_parts = nodeUrl.parse(newUrl, true);
+      function onCallback(url) {
+        var url_parts = nodeUrl.parse(url, true);
         var query = url_parts.query;
         var code = query.code;
         var error = query.error;
@@ -43,12 +47,20 @@ module.exports = function (config, windowParams) {
         if (error !== undefined) {
           reject(error);
           authWindow.removeAllListeners('closed');
-          authWindow.destroy();
+          authWindow.close();
         } else if (code) {
           resolve(code);
           authWindow.removeAllListeners('closed');
-          authWindow.destroy();
+          authWindow.close();
         }
+      }
+
+      authWindow.webContents.on('will-navigate', (event, url) => {
+        onCallback(url);
+      });
+
+      authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
+        onCallback(newUrl);
       });
     });
   }
@@ -83,7 +95,7 @@ module.exports = function (config, windowParams) {
         return tokenRequest({
           code: authorizationCode,
           grant_type: 'authorization_code',
-          redirect_uri: 'urn:ietf:wg:oauth:2.0:oob'
+          redirect_uri: config.redirect_uri
         });
       });
   }
@@ -92,7 +104,7 @@ module.exports = function (config, windowParams) {
     return tokenRequest({
       refresh_token: refreshToken,
       grant_type: 'refresh_token',
-      redirect_uri: 'urn:ietf:wg:oauth:2.0:oob'
+      redirect_uri: config.redirect_uri
     });
   }
 
