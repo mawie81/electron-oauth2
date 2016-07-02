@@ -21,7 +21,7 @@ var config = {
     authorizationUrl: 'AUTHORIZATION_URL',
     tokenUrl: 'TOKEN_URL',
     useBasicAuthorizationHeader: false,
-    redirect_url: 'http://localhost'
+    redirectUri: 'http://localhost'
 };
 
 app.on('ready', () => {
