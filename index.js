@@ -10,7 +10,7 @@ module.exports = function (config, windowParams) {
     opts = opts || {};
     var urlParams = {
       response_type: 'code',
-      redirect_uri: 'urn:ietf:wg:oauth:2.0:oob',
+      redirect_uri: config.redirect_uri || 'urn:ietf:wg:oauth:2.0:oob',
       client_id: config.clientId
     };
 
