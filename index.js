@@ -10,13 +10,13 @@ module.exports = function (config, windowParams) {
   function getAuthorizationCode(opts) {
     opts = opts || {};
 
-    if (!config.redirect_uri) {
-      config.redirect_uri = 'urn:ietf:wg:oauth:2.0:oob';
+    if (!config.redirectUri) {
+      config.redirectUri = 'urn:ietf:wg:oauth:2.0:oob';
     }
 
     var urlParams = {
       response_type: 'code',
-      redirect_uri: config.redirect_uri,
+      redirect_uri: config.redirectUri,
       client_id: config.clientId
     };
 
@@ -97,7 +97,7 @@ module.exports = function (config, windowParams) {
         return tokenRequest({
           code: authorizationCode,
           grant_type: 'authorization_code',
-          redirect_uri: config.redirect_uri
+          redirect_uri: config.redirectUri
         });
       });
   }
@@ -106,7 +106,7 @@ module.exports = function (config, windowParams) {
     return tokenRequest({
       refresh_token: refreshToken,
       grant_type: 'refresh_token',
-      redirect_uri: config.redirect_uri
+      redirect_uri: config.redirectUri
     });
   }
 
