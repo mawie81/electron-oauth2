@@ -85,7 +85,7 @@ If set to true, token requests will be made using a Basic authentication header 
 
 ###### redirectUri (optional)
 Type: `String`
-Sets a custom redirect_uri that can be required by some OAuth2 clients.
+Sets a custom redirect_uri that can be required by some OAuth2 clients. Default: ```urn:ietf:wg:oauth:2.0:oob``
 
 #### windowParams
 
