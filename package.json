@@ -23,6 +23,8 @@
   ],
   "devDependencies": {
     "ava": "^0.8.0",
+    "electron": "^0.4.1",
+    "mocha": "^2.5.3",
     "xo": "^0.12.1"
   },
   "dependencies": {
@@ -32,6 +34,7 @@
   },
   "xo": {
     "space": true,
+    "globals": ["describe", "it"],
     "rules": {
       "brace-style": [
         2,
