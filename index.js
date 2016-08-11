@@ -50,13 +50,13 @@ module.exports = function (config, windowParams) {
         if (error !== undefined) {
           reject(error);
           authWindow.removeAllListeners('closed');
-          setImmediate(function() {
+          setImmediate(function () {
             authWindow.close();
           });
         } else if (code) {
           resolve(code);
           authWindow.removeAllListeners('closed');
-          setImmediate(function() {
+          setImmediate(function () {
             authWindow.close();
           });
         }
