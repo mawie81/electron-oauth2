@@ -1,6 +1,6 @@
 {
   "name": "electron-oauth2",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "An OAuth2 module for your Electron app.",
   "license": "MIT",
   "repository": "mawie81/electron-oauth2",
@@ -23,7 +23,7 @@
   ],
   "devDependencies": {
     "ava": "^0.8.0",
-    "electron": "^0.4.1",
+    "electron": "^1.4.1",
     "mocha": "^2.5.3",
     "xo": "^0.12.1"
   },
