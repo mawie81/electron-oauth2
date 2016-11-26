@@ -103,7 +103,7 @@ module.exports = function (config, windowParams) {
           code: authorizationCode,
           grant_type: 'authorization_code',
           redirect_uri: config.redirectUri
-        }
+        };
         tokenRequestData = Object.assign(tokenRequestData, opts.additionalTokenRequestData);
         return tokenRequest(tokenRequestData);
       });
