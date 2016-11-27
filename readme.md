@@ -110,6 +110,10 @@ The optional OAuth2 scopes.
 Type: `String`
 The optional OAuth2 access type.
 
+###### additionalTokenRequestData
+Type: `Object`
+The optional additional parameters to pass to the server in the body of the token request.
+
 #### getAuthorizationCode(options)
 
 Returns a ```Promise``` that gets resolved with the authorization code of the OAuth2 authorization request.

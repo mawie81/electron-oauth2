@@ -99,11 +99,13 @@ module.exports = function (config, windowParams) {
   function getAccessToken(opts) {
     return getAuthorizationCode(opts)
       .then(authorizationCode => {
-        return tokenRequest({
+        var tokenRequestData = {
           code: authorizationCode,
           grant_type: 'authorization_code',
           redirect_uri: config.redirectUri
-        });
+        };
+        tokenRequestData = Object.assign(tokenRequestData, opts.additionalTokenRequestData);
+        return tokenRequest(tokenRequestData);
       });
   }
 
