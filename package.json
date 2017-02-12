@@ -39,7 +39,8 @@
     "space": true,
     "globals": [
       "describe",
-      "it"
+      "it",
+      "xdescribe"
     ],
     "rules": {
       "brace-style": [
