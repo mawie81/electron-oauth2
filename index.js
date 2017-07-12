@@ -8,6 +8,17 @@ const nodeUrl = require('url');
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow || electron.remote.BrowserWindow;
 
+var generateRandomString = function (length) {
+  var text = '';
+  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+  for (var i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return text;
+};
+
 module.exports = function (config, windowParams) {
   function getAuthorizationCode(opts) {
     opts = opts || {};
@@ -19,7 +30,8 @@ module.exports = function (config, windowParams) {
     var urlParams = {
       response_type: 'code',
       redirect_uri: config.redirectUri,
-      client_id: config.clientId
+      client_id: config.clientId,
+      state: generateRandomString(16)
     };
 
     if (opts.scope) {
