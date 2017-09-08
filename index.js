@@ -50,7 +50,7 @@ module.exports = function (config, windowParams) {
       authWindow.loadURL(url);
       authWindow.show();
 
-      authWindow.on('closed', () => {
+      authWindow.on('closed', function () {
         reject(new Error('window was closed by user'));
       });
 
@@ -75,11 +75,11 @@ module.exports = function (config, windowParams) {
         }
       }
 
-      authWindow.webContents.on('will-navigate', (event, url) => {
+      authWindow.webContents.on('will-navigate', function (event, url) {
         onCallback(url);
       });
 
-      authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
+      authWindow.webContents.on('did-get-redirect-request', function (event, oldUrl, newUrl) {
         onCallback(newUrl);
       });
     });
@@ -104,14 +104,14 @@ module.exports = function (config, windowParams) {
       method: 'POST',
       headers: header,
       body: queryString.stringify(data)
-    }).then(res => {
+    }).then(function (res) {
       return res.json();
     });
   }
 
   function getAccessToken(opts) {
     return getAuthorizationCode(opts)
-      .then(authorizationCode => {
+      .then(function (authorizationCode) {
         var tokenRequestData = {
           code: authorizationCode,
           grant_type: 'authorization_code',
