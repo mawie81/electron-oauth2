@@ -45,7 +45,7 @@ module.exports = function (config, windowParams) {
     var url = config.authorizationUrl + '?' + queryString.stringify(urlParams);
 
     return new Promise(function (resolve, reject) {
-      const authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
+      const authWindow = new BrowserWindow(windowParams || { 'use-content-size': true });
 
       authWindow.loadURL(url);
       authWindow.show();
@@ -64,19 +64,29 @@ module.exports = function (config, windowParams) {
           reject(error);
           authWindow.removeAllListeners('closed');
           setImmediate(function () {
-            authWindow.close();
-            setTimeout(function(){
-              authWindow.destroy()
-            },100)
+            setTimeout(function () {
+              authWindow.webContents.session.clearStorageData({
+                storages: ['appcache', 'cookies', 'filesystem', 'shadercache'],
+                quotas: ['persistent', 'syncable']
+              }, function () {
+                authWindow.close();
+                authWindow.destroy()
+              });
+            }, 100)
           });
         } else if (code) {
           resolve(code);
           authWindow.removeAllListeners('closed');
           setImmediate(function () {
-            authWindow.close();
-            setTimeout(function(){
-              authWindow.destroy()
-            },100)
+            setTimeout(function () {
+              authWindow.webContents.session.clearStorageData({
+                storages: ['appcache', 'cookies', 'filesystem', 'shadercache'],
+                quotas: ['persistent', 'syncable']
+              }, function () {
+                authWindow.close();
+                authWindow.destroy()
+              });
+            }, 100)
           });
         }
       }
