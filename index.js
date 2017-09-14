@@ -65,12 +65,18 @@ module.exports = function (config, windowParams) {
           authWindow.removeAllListeners('closed');
           setImmediate(function () {
             authWindow.close();
+            setTimeout(function(){
+              authWindow.destroy()
+            },100)
           });
         } else if (code) {
           resolve(code);
           authWindow.removeAllListeners('closed');
           setImmediate(function () {
             authWindow.close();
+            setTimeout(function(){
+              authWindow.destroy()
+            },100)
           });
         }
       }
