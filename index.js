@@ -42,7 +42,7 @@ module.exports = function (config, windowParams, customConfig) {
       urlParams.access_type = opts.accessType;
     }
 
-    var url = config.authorizationUrl + '?' + queryString.stringify(urlParams) + "&" + queryString.stringify(customConfig);
+    var url = config.authorizationUrl + '?' + queryString.stringify(urlParams) + '&' + queryString.stringify(customConfig);
 
     return new Promise(function (resolve, reject) {
       const authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
