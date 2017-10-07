@@ -19,7 +19,7 @@ var generateRandomString = function (length) {
   return text;
 };
 
-module.exports = function (config, windowParams) {
+module.exports = function (config, windowParams, customConfig) {
   function getAuthorizationCode(opts) {
     opts = opts || {};
 
@@ -42,7 +42,7 @@ module.exports = function (config, windowParams) {
       urlParams.access_type = opts.accessType;
     }
 
-    var url = config.authorizationUrl + '?' + queryString.stringify(urlParams);
+    var url = config.authorizationUrl + '?' + queryString.stringify(urlParams) + "&" + queryString.stringify(customConfig);
 
     return new Promise(function (resolve, reject) {
       const authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
