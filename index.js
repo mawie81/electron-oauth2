@@ -45,7 +45,7 @@ module.exports = function (config, windowParams) {
     var url = config.authorizationUrl + '?' + queryString.stringify(urlParams);
 
     return new Promise(function (resolve, reject) {
-      const authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
+      let authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
 
       authWindow.loadURL(url);
       authWindow.show();
@@ -55,6 +55,10 @@ module.exports = function (config, windowParams) {
       });
 
       function onCallback(url) {
+        if (!authWindow) {
+          // Promise already resolved and window closed
+          return;
+        }
         var url_parts = nodeUrl.parse(url, true);
         var query = url_parts.query;
         var code = query.code;
@@ -65,12 +69,14 @@ module.exports = function (config, windowParams) {
           authWindow.removeAllListeners('closed');
           setImmediate(function () {
             authWindow.close();
+            authWindow = null;
           });
         } else if (code) {
           resolve(code);
           authWindow.removeAllListeners('closed');
           setImmediate(function () {
             authWindow.close();
+            authWindow = null;
           });
         }
       }
@@ -110,6 +116,7 @@ module.exports = function (config, windowParams) {
   }
 
   function getAccessToken(opts) {
+    opts = opts || {};
     return getAuthorizationCode(opts)
       .then(authorizationCode => {
         var tokenRequestData = {
