@@ -45,7 +45,10 @@ module.exports = function (config, windowParams) {
     var url = config.authorizationUrl + '?' + queryString.stringify(urlParams);
 
     return new Promise(function (resolve, reject) {
-      const authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
+      const authWindow = new BrowserWindow(windowParams || { 'use-content-size': true });
+
+      let receivedCode = false;
+      let receivedError = false;
 
       authWindow.loadURL(url);
       authWindow.show();
@@ -54,24 +57,47 @@ module.exports = function (config, windowParams) {
         reject(new Error('window was closed by user'));
       });
 
-      function onCallback(url) {
+      function closeAuthWindow() {
+        authWindow.removeAllListeners();
+        setImmediate(function () {
+          authWindow.close();
+        });
+      }
+
+      function onCallback(url, err) {
+        if (receivedCode || receivedError) {
+          return;
+        }
+
+        if (err) {
+          receivedError = true
+          reject(err);
+          closeAuthWindow();
+          return;
+        }
+
         var url_parts = nodeUrl.parse(url, true);
         var query = url_parts.query;
-        var code = query.code;
+        var code = null;
         var error = query.error;
 
+        // Grant code should be captured only from the redirect uri specified in the config
+        // This allows for multiple brokers in OIDC chain which may url parameter with name code
+        if ( url.startsWith(config.redirectUri + '?')
+          || url.startsWith(config.redirectUri + '/?')) {
+          code = query.code;
+        }
+
         if (error !== undefined) {
+          receivedError = true
           reject(error);
-          authWindow.removeAllListeners('closed');
-          setImmediate(function () {
-            authWindow.close();
-          });
+          closeAuthWindow();
+          return;
         } else if (code) {
+          receivedCode = true;
           resolve(code);
-          authWindow.removeAllListeners('closed');
-          setImmediate(function () {
-            authWindow.close();
-          });
+          closeAuthWindow();
+          return;
         }
       }
 
