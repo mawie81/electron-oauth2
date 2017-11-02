@@ -7,8 +7,8 @@ const objectAssign = require('object-assign');
 const nodeUrl = require('url');
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow || electron.remote.BrowserWindow;
-const { ipcMain } = require("electron");
-const path = require("path");
+const {ipcMain} = require('electron');
+const path = require('path');
 
 var generateRandomString = function (length) {
   var text = '';
@@ -62,15 +62,15 @@ module.exports = function (config, windowParams) {
         promptOptions = options;
         promptWindow = new BrowserWindow({
           width: 300, height: 150,
-          'parent': parent,
-          'show': true,
-          'modal': true,
-          'alwaysOnTop': true,
-          'title': options.title,
-          'autoHideMenuBar': true,
-          'webPreferences': {
-            "nodeIntegration": true,
-            "sandbox": false
+          parent: parent,
+          show: true,
+          modal: true,
+          alwaysOnTop: true,
+          title: options.title,
+          autoHideMenuBar: true,
+          webPreferences: {
+            nodeIntegration: true,
+            sandbox: false
           }
         });
 
@@ -88,14 +88,14 @@ module.exports = function (config, windowParams) {
       }
 
       // Called by the dialog box to get its parameters
-      ipcMain.on("openDialog", event => {
+      ipcMain.on('openDialog', event => {
         event.returnValue = JSON.stringify(promptOptions, null, '');
-      })
+      });
 
       // Called by the dialog box when closed
-      ipcMain.on("closeDialog", (event, data) => {
+      ipcMain.on('closeDialog', (event, data) => {
         promptAnswer = data;
-      })
+      });
 
       authWindow.loadURL(url);
       authWindow.show();
@@ -152,13 +152,12 @@ module.exports = function (config, windowParams) {
         event.preventDefault();
 
         promptModal(authWindow, {
-          "label": "Login to " + authInfo.host + " :",
+          label: 'Login to ' + authInfo.host + ' :'
         },
           function (data) {
             if (data) {
               callback(data.username, data.password);
-            }
-            else {
+            } else {
               onCallback(null, new Error('User cancelled authentication'));
             }
           }
