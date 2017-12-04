@@ -96,14 +96,14 @@ module.exports = function (config, windowParams) {
       ipcMain.on('closeDialog', (event, data) => {
         promptAnswer = data;
       });
-      
+
       // If the certificate used for TLS in any redirects is not trusted,
       // handle it here. Default behavior is hung app with white screen
-      authWindow.webContents.on('certificate-error', (event, url, error, certificate, callback) => {
+      authWindow.webContents.on('certificate-error', (event, url) => {
         authWindow.hide();
         reject(new Error('Certificate presented for ' + url + ' is not trusted'));
       });
-      
+
       authWindow.loadURL(url);
       authWindow.show();
 
