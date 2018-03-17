@@ -31,7 +31,7 @@ module.exports = function (config, windowParams) {
       response_type: 'code',
       redirect_uri: config.redirectUri,
       client_id: config.clientId,
-      state: generateRandomString(16)
+      state: generateRandomString(16),
     };
 
     if (opts.scope) {
@@ -41,6 +41,8 @@ module.exports = function (config, windowParams) {
     if (opts.accessType) {
       urlParams.access_type = opts.accessType;
     }
+
+    urlParams = Object.assign(urlParams, opts.additionalAuthCodeRequestData);
 
     var url = config.authorizationUrl + '?' + queryString.stringify(urlParams);
 
