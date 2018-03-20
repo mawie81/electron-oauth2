@@ -64,13 +64,17 @@ module.exports = function (config, windowParams) {
           reject(error);
           authWindow.removeAllListeners('closed');
           setImmediate(function () {
-            authWindow.close();
+            if(!authWindow.isDestroyed()){
+              authWindow.close();
+            }
           });
         } else if (code) {
           resolve(code);
           authWindow.removeAllListeners('closed');
           setImmediate(function () {
-            authWindow.close();
+           if(!authWindow.isDestroyed()){
+              authWindow.close();
+            }
           });
         }
       }
