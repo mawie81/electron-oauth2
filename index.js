@@ -49,8 +49,8 @@ module.exports = function (config, windowParams) {
 
       authWindow.loadURL(url);
       authWindow.once('ready-to-show', () => {
-        authWindow.show()
-      })
+        authWindow.show();
+      });
       
 
       authWindow.on('closed', () => {
