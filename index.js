@@ -42,6 +42,8 @@ module.exports = function (config, windowParams) {
       urlParams.access_type = opts.accessType;
     }
 
+    urlParams = Object.assign(urlParams, opts.additionalAuthCodeRequestData);
+
     var url = config.authorizationUrl + '?' + queryString.stringify(urlParams);
 
     return new Promise(function (resolve, reject) {
