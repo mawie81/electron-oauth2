@@ -12,3 +12,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased]: https://github.com/olivierlacan/keep-a-changelog/compare/3.0.0...HEAD
 [3.0.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v2.4.1...3.0.0
+
+## Previous Versions
+No changelog kept. See https://github.com/mawie81/electron-oauth2/releases.
