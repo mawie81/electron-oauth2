@@ -19,7 +19,7 @@ var generateRandomString = function (length) {
   return text;
 };
 
-module.exports = function (config, windowParams, clearCache = false) {
+module.exports = function (config, windowParams, clearStorageData = false) {
   function getAuthorizationCode(opts) {
     opts = opts || {};
 
@@ -49,8 +49,8 @@ module.exports = function (config, windowParams, clearCache = false) {
     return new Promise(function (resolve, reject) {
       const authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
 
-      if (clearCache) {
-        authWindow.webContents.session.clearCache();
+      if (clearStorageData) {
+        authWindow.webContents.session.clearStorageData()
       }
 
       authWindow.loadURL(url);
