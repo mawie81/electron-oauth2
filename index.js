@@ -50,7 +50,7 @@ module.exports = function (config, windowParams, clearStorageData = false) {
       const authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
 
       if (clearStorageData) {
-        authWindow.webContents.session.clearStorageData()
+        authWindow.webContents.session.clearStorageData();
       }
 
       authWindow.loadURL(url);
