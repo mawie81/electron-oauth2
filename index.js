@@ -47,12 +47,12 @@ module.exports = function (config, windowParams) {
     var url = config.authorizationUrl + '?' + queryString.stringify(urlParams);
 
     return new Promise(function (resolve, reject) {
-      const authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
+      const authWindow = new BrowserWindow(windowParams || { 'use-content-size': true });
 
       authWindow.loadURL(url);
       authWindow.show();
 
-      authWindow.on('closed', () => {
+      authWindow.on('closed', function () {
         reject(new Error('window was closed by user'));
       });
 
@@ -66,22 +66,38 @@ module.exports = function (config, windowParams) {
           reject(error);
           authWindow.removeAllListeners('closed');
           setImmediate(function () {
-            authWindow.close();
+            setTimeout(function () {
+              authWindow.webContents.session.clearStorageData({
+                storages: ['appcache', 'cookies', 'filesystem', 'shadercache'],
+                quotas: ['persistent', 'syncable']
+              }, function () {
+                authWindow.close();
+                authWindow.destroy()
+              });
+            }, 100)
           });
         } else if (code) {
           resolve(code);
           authWindow.removeAllListeners('closed');
           setImmediate(function () {
-            authWindow.close();
+            setTimeout(function () {
+              authWindow.webContents.session.clearStorageData({
+                storages: ['appcache', 'cookies', 'filesystem', 'shadercache'],
+                quotas: ['persistent', 'syncable']
+              }, function () {
+                authWindow.close();
+                authWindow.destroy()
+              });
+            }, 100)
           });
         }
       }
 
-      authWindow.webContents.on('will-navigate', (event, url) => {
+      authWindow.webContents.on('will-navigate', function (event, url) {
         onCallback(url);
       });
 
-      authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
+      authWindow.webContents.on('did-get-redirect-request', function (event, oldUrl, newUrl) {
         onCallback(newUrl);
       });
     });
@@ -106,14 +122,14 @@ module.exports = function (config, windowParams) {
       method: 'POST',
       headers: header,
       body: queryString.stringify(data)
-    }).then(res => {
+    }).then(function (res) {
       return res.json();
     });
   }
 
   function getAccessToken(opts) {
     return getAuthorizationCode(opts)
-      .then(authorizationCode => {
+      .then(function (authorizationCode) {
         var tokenRequestData = {
           code: authorizationCode,
           grant_type: 'authorization_code',

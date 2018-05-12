@@ -1,13 +1,12 @@
 {
-  "name": "electron-oauth2",
-  "version": "2.4.1",
+  "name": "electron-oauth",
+  "version": "2.4.3",
   "description": "An OAuth2 module for your Electron app.",
   "license": "MIT",
-  "repository": "mawie81/electron-oauth2",
+  "repository": "Vishal Isharani/electron-oauth2",
   "author": {
-    "name": "Marcel Wiehle",
-    "email": "mawieh@googlemail.com",
-    "url": "marcel.wiehle.me"
+    "name": "Vishal Isharani",
+    "email": "isharanivishal@gmail.com"
   },
   "files": [
     "index.js"

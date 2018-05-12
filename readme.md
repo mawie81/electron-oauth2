@@ -1,4 +1,3 @@
-# electron-oauth2 [![Build Status](https://travis-ci.org/mawie81/electron-oauth2.svg?branch=master)](https://travis-ci.org/mawie81/electron-oauth2)
 
 > A library to handle OAuth2 authentication for your [Electron](http://electron.atom.io) app.
 
@@ -6,14 +5,14 @@
 ## Install
 
 ```
-$ npm install --save electron-oauth2
+$ npm install --save electron-oauth
 ```
 
 
 ## Usage
 
 ```js
-const electronOauth2 = require('electron-oauth2');
+const electronOauth = require('electron-oauth');
 
 var config = {
     clientId: 'CLIENT_ID',
@@ -38,7 +37,7 @@ app.on('ready', () => {
     accessType: 'ACCESS_TYPE'
   };
 
-  const myApiOauth = electronOauth2(config, windowParams);
+  const myApiOauth = electronOauth(config, windowParams);
 
   myApiOauth.getAccessToken(options)
     .then(token => {
@@ -55,7 +54,7 @@ app.on('ready', () => {
 
 ## API
 
-### electronOauth2(config, windowParams)
+### electronOauth(config, windowParams)
 
 #### config
 
@@ -142,4 +141,4 @@ An OAuth2 refresh token.
 
 ## License
 
-MIT © [Marcel Wiehle](http://marcel.wiehle.me)
+MIT © [Vishal Isharani]
