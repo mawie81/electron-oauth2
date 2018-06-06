@@ -1,3 +1,5 @@
+#### IMPORTANT SECURITY NOTICE: This repo was a proof of concept and unfortunately it is not secure to use for production purposes. If you're trying to implement OAuth in an Electron app, please see [IETF RFC 8252](https://tools.ietf.org/html/rfc8252), Google's recommendations ([here](https://developers.google.com/identity/protocols/OAuth2InstalledApp) and [here](https://github.com/google/google-auth-library-nodejs#oauth2-with-installed-apps-electron)), or [AppAuth-JS](https://github.com/openid/AppAuth-JS).
+
 # electron-oauth2 [![Build Status](https://travis-ci.org/mawie81/electron-oauth2.svg?branch=master)](https://travis-ci.org/mawie81/electron-oauth2)
 
 > A library to handle OAuth2 authentication for your [Electron](http://electron.atom.io) app.
