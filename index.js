@@ -19,7 +19,7 @@ var generateRandomString = function (length) {
   return text;
 };
 
-module.exports = function (config, windowParams) {
+module.exports = function (config, windowParams, clearStorageData = false) {
   function getAuthorizationCode(opts) {
     opts = opts || {};
 
@@ -48,6 +48,10 @@ module.exports = function (config, windowParams) {
 
     return new Promise(function (resolve, reject) {
       const authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
+
+      if (clearStorageData) {
+        authWindow.webContents.session.clearStorageData();
+      }
 
       authWindow.loadURL(url);
       authWindow.show();
