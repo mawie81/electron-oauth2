@@ -50,7 +50,10 @@ module.exports = function (config, windowParams) {
       const authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
 
       authWindow.loadURL(url);
-      authWindow.show();
+      authWindow.once('ready-to-show', () => {
+        authWindow.show();
+      });
+      
 
       authWindow.on('closed', () => {
         reject(new Error('window was closed by user'));
@@ -66,13 +69,17 @@ module.exports = function (config, windowParams) {
           reject(error);
           authWindow.removeAllListeners('closed');
           setImmediate(function () {
-            authWindow.close();
+            if(!authWindow.isDestroyed()){
+              authWindow.close();
+            }
           });
         } else if (code) {
           resolve(code);
           authWindow.removeAllListeners('closed');
           setImmediate(function () {
-            authWindow.close();
+           if(!authWindow.isDestroyed()){
+              authWindow.close();
+            }
           });
         }
       }
