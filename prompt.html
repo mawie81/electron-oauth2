@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title>Login</title>
+    </head>
+    <body>
+        <p id="label"></p>
+        <p>
+            <input type="text" id="username" value="" placeholder="User Name">
+            <input type="password" id="password" value="" placeholder="Password">
+        </p>
+        <p>
+            <input type = "button" id="ok" value="Login" onclick="response()">
+            <input type = "button" value="Cancel" onclick="cancel()">
+        </p>
+        <script>
+        const { ipcRenderer } = require("electron");
+
+        function cancel() {
+            ipcRenderer.send("closeDialog", null);
+            this.close();
+        }
+
+        function response() {
+            ipcRenderer.send("closeDialog", 
+                { 
+                    username: document.getElementById("username").value, 
+                    password: document.getElementById("password").value 
+                });
+            this.close();
+        }
+        
+        window.onload=function() {
+            var options = ipcRenderer.sendSync("openDialog", "");
+            var params = JSON.parse(options);
+            document.getElementById("label").innerHTML = params.label;   
+        }
+        </script>
+    </body>
+</html>

@@ -10,7 +10,8 @@
     "url": "marcel.wiehle.me"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "prompt.html"
   ],
   "scripts": {
     "test": "xo"

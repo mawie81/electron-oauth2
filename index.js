@@ -7,6 +7,8 @@ const objectAssign = require('object-assign');
 const nodeUrl = require('url');
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow || electron.remote.BrowserWindow;
+const {ipcMain} = require('electron');
+const path = require('path');
 
 var generateRandomString = function (length) {
   var text = '';
@@ -49,6 +51,61 @@ module.exports = function (config, windowParams) {
     return new Promise(function (resolve, reject) {
       const authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
 
+      let receivedCode = false;
+      let receivedError = false;
+
+      /* DIALOG BOX PART */
+      var promptWindow;
+      var promptOptions;
+      var promptAnswer;
+
+      // Clearing the dialog
+      function promptModal(parent, options, callback) {
+        promptOptions = options;
+        promptWindow = new BrowserWindow({
+          width: 300, height: 150,
+          parent: parent,
+          show: true,
+          modal: true,
+          alwaysOnTop: true,
+          title: options.title,
+          autoHideMenuBar: true,
+          webPreferences: {
+            nodeIntegration: true,
+            sandbox: false
+          }
+        });
+
+        promptWindow.on('closed', () => {
+          promptWindow = null;
+          callback(promptAnswer);
+        });
+
+        // Load the HTML dialog box
+        promptWindow.loadURL(nodeUrl.format({
+          pathname: path.join(__dirname, 'prompt.html'),
+          protocol: 'file:',
+          slashes: true
+        }));
+      }
+
+      // Called by the dialog box to get its parameters
+      ipcMain.on('openDialog', event => {
+        event.returnValue = JSON.stringify(promptOptions, null, '');
+      });
+
+      // Called by the dialog box when closed
+      ipcMain.on('closeDialog', (event, data) => {
+        promptAnswer = data;
+      });
+
+      // If the certificate used for TLS in any redirects is not trusted,
+      // handle it here. Default behavior is hung app with white screen
+      authWindow.webContents.on('certificate-error', (event, url) => {
+        authWindow.hide();
+        reject(new Error('Certificate presented for ' + url + ' is not trusted'));
+      });
+
       authWindow.loadURL(url);
       authWindow.show();
 
@@ -56,26 +113,65 @@ module.exports = function (config, windowParams) {
         reject(new Error('window was closed by user'));
       });
 
-      function onCallback(url) {
+      function closeAuthWindow() {
+        authWindow.removeAllListeners();
+        setImmediate(function () {
+          authWindow.close();
+        });
+      }
+
+      function onCallback(url, err) {
+        if (receivedCode || receivedError) {
+          return;
+        }
+
+        if (err) {
+          receivedError = true;
+          reject(err);
+          closeAuthWindow();
+          return;
+        }
+
         var url_parts = nodeUrl.parse(url, true);
         var query = url_parts.query;
-        var code = query.code;
+        var code = null;
         var error = query.error;
 
+        // Grant code should be captured only from the redirect uri specified in the config
+        // This allows for multiple brokers in OIDC chain which may url parameter with name code
+        if (url.startsWith(config.redirectUri + '?') ||
+          url.startsWith(config.redirectUri + '/?')) {
+          code = query.code;
+        }
+
         if (error !== undefined) {
+          receivedError = true;
           reject(error);
-          authWindow.removeAllListeners('closed');
-          setImmediate(function () {
-            authWindow.close();
-          });
+          closeAuthWindow();
+          return;
         } else if (code) {
+          receivedCode = true;
           resolve(code);
-          authWindow.removeAllListeners('closed');
-          setImmediate(function () {
-            authWindow.close();
-          });
+          closeAuthWindow();
+          return;
         }
       }
+
+      authWindow.webContents.on('login', (event, request, authInfo, callback) => {
+        event.preventDefault();
+
+        promptModal(authWindow, {
+          label: 'Login to ' + authInfo.host + ' :'
+        },
+          function (data) {
+            if (data) {
+              callback(data.username, data.password);
+            } else {
+              onCallback(null, new Error('User cancelled authentication'));
+            }
+          }
+        );
+      });
 
       authWindow.webContents.on('will-navigate', (event, url) => {
         onCallback(url);
