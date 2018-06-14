@@ -48,6 +48,7 @@ module.exports = function (config, windowParams) {
 
     return new Promise(function (resolve, reject) {
       const authWindow = new BrowserWindow(windowParams || {'use-content-size': true});
+      let done = false;
 
       authWindow.loadURL(url);
       authWindow.show();
@@ -56,7 +57,20 @@ module.exports = function (config, windowParams) {
         reject(new Error('window was closed by user'));
       });
 
+      function close() {
+        authWindow.removeAllListeners('closed');
+
+        setImmediate(function() {
+          authWindow.close();
+        });
+      }
+
       function onCallback(url) {
+        if (done) {
+          return;
+        }
+        done = true;
+
         var url_parts = nodeUrl.parse(url, true);
         var query = url_parts.query;
         var code = query.code;
@@ -64,16 +78,10 @@ module.exports = function (config, windowParams) {
 
         if (error !== undefined) {
           reject(error);
-          authWindow.removeAllListeners('closed');
-          setImmediate(function () {
-            authWindow.close();
-          });
+          close();
         } else if (code) {
           resolve(code);
-          authWindow.removeAllListeners('closed');
-          setImmediate(function () {
-            authWindow.close();
-          });
+          close();
         }
       }
 
